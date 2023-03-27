@@ -3,8 +3,10 @@ import { ReactElement } from 'react';
 import { GiFlowerPot } from 'react-icons/gi';
 
 import { BackgroundImage } from '../common/BackgroundImage';
+import { usePreFetchingTreatments } from '../treatments/hooks/useTreatments';
 
 export function Home(): ReactElement {
+  usePreFetchingTreatments();
   return (
     <Stack textAlign="center" justify="center" height="84vh">
       <BackgroundImage />

@@ -8,18 +8,30 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { UserAppointments } from '../user/UserAppointments';
 import { DateBox } from './DateBox';
-import { useAppointments } from './hooks/useAppointments';
+import { getNewMonthYear } from './hooks/monthYear';
+import {
+  useAppointments,
+  usePreFetchingAppointments,
+} from './hooks/useAppointments';
 
 export function Calendar(): ReactElement {
   const currentDate = dayjs();
 
   const { appointments, monthYear, updateMonthYear, showAll, setShowAll } =
     useAppointments();
+
+  const [newMonthYear, setNewMonthYear] = useState(monthYear);
+
+  useEffect(() => {
+    setNewMonthYear(getNewMonthYear(monthYear, 1));
+  }, [monthYear]);
+
+  usePreFetchingAppointments(newMonthYear);
 
   return (
     <Box>

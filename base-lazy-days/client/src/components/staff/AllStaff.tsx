@@ -23,7 +23,14 @@ export function AllStaff(): ReactElement {
       <RadioGroup onChange={setFilter} value={filter}>
         <HStack my={10} spacing={8} justify="center">
           <Heading size="md">Filter by treatment:</Heading>
-          <Radio value="all">All</Radio>
+          <Radio
+            onClick={() => {
+              setFilter('all');
+            }}
+            value="all"
+          >
+            All
+          </Radio>
           {treatments.map((t) => (
             <Radio
               onClick={() => {

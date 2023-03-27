@@ -1,6 +1,7 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
@@ -32,7 +33,7 @@ interface UseAppointments {
 //     1a. provide a way to update state
 //   2. return the appointments for that particular monthYear
 //     2a. return in AppointmentDateMap format (appointment arrays indexed by day of month)
-//     2b. prefetch the appointments for adjacent monthYears
+//     2b. prefetch the appointments for adjacent monthYears,
 //   3. track the state of the filter (all appointments / available appointments)
 //     3a. return the only the applicable appointments for the current monthYear
 export function useAppointments(): UseAppointments {
@@ -49,6 +50,7 @@ export function useAppointments(): UseAppointments {
   function updateMonthYear(monthIncrement: number): void {
     setMonthYear((prevData) => getNewMonthYear(prevData, monthIncrement));
   }
+
   /** ****************** END 1: monthYear state ************************* */
   /** ****************** START 2: filter appointments  ****************** */
   // State and functions for filtering appointments to show all or only available
@@ -70,9 +72,19 @@ export function useAppointments(): UseAppointments {
   //
   //    2. The getAppointments query function needs monthYear.year and
   //       monthYear.month
-  const appointments = {};
-
   /** ****************** END 3: useQuery  ******************************* */
+  const { data: appointments = {} } = useQuery(
+    [queryKeys.appointments, monthYear.year, monthYear.month],
+    () => getAppointments(monthYear.year, monthYear.month),
+  );
 
   return { appointments, monthYear, updateMonthYear, showAll, setShowAll };
+}
+
+export function usePreFetchingAppointments(monthYear: MonthYear): void {
+  const queryClent = useQueryClient();
+  queryClent.prefetchQuery(
+    [queryKeys.appointments, monthYear.year, monthYear.month],
+    () => getAppointments(monthYear.year, monthYear.month),
+  );
 }
