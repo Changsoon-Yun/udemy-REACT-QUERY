@@ -10,28 +10,19 @@ import {
 import dayjs from 'dayjs';
 import { ReactElement, useEffect, useState } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
+import { useQueryClient } from 'react-query';
 
+import { queryKeys } from '../../react-query/constants';
 import { UserAppointments } from '../user/UserAppointments';
 import { DateBox } from './DateBox';
 import { getNewMonthYear } from './hooks/monthYear';
-import {
-  useAppointments,
-  usePreFetchingAppointments,
-} from './hooks/useAppointments';
+import { useAppointments } from './hooks/useAppointments';
 
 export function Calendar(): ReactElement {
   const currentDate = dayjs();
 
   const { appointments, monthYear, updateMonthYear, showAll, setShowAll } =
     useAppointments();
-
-  const [newMonthYear, setNewMonthYear] = useState(monthYear);
-
-  useEffect(() => {
-    setNewMonthYear(getNewMonthYear(monthYear, 1));
-  }, [monthYear]);
-
-  usePreFetchingAppointments(newMonthYear);
 
   return (
     <Box>
