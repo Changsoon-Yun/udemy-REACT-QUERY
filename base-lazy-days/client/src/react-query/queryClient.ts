@@ -1,5 +1,10 @@
 import { createStandaloneToast } from '@chakra-ui/react';
-import { QueryClient } from 'react-query';
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientConfig,
+} from 'react-query';
 
 import { theme } from '../theme';
 
@@ -15,10 +20,15 @@ function queryErrorHandler(error: unknown): void {
   toast({ title, status: 'error', variant: 'subtle', isClosable: true });
 }
 
-const config = {
+const config: QueryClientConfig = {
+  queryCache: new QueryCache({
+    onError: queryErrorHandler,
+  }),
+  mutationCache: new MutationCache({
+    onError: queryErrorHandler,
+  }),
   defaultOptions: {
     queries: {
-      onError: queryErrorHandler,
       staleTime: 600000, // 10min
       cacheTime: 900000, // 15min,
       refetchOnMount: false,
