@@ -16,6 +16,11 @@ import { AppointmentDateMap } from '../types';
 import { getAvailableAppointments } from '../utils';
 import { getMonthYearDetails, getNewMonthYear, MonthYear } from './monthYear';
 
+// common options for both useQuery and preFetching
+const commonOptions = {
+  staleTime: 0,
+  cacheTime: 300000, // 5min,
+};
 // for useQuery call
 async function getAppointments(
   year: string,
@@ -77,14 +82,17 @@ export function useAppointments(): UseAppointments {
   // useQuery call for appointments for the current monthYear
 
   // TODO: update with useQuery!
-  const nextMonth = getNewMonthYear(monthYear, 1);
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    queryClient.prefetchQuery(
-      [queryKeys.appointments, nextMonth.year, nextMonth.month],
-      () => getAppointments(nextMonth.year, nextMonth.month),
-    );
+    const nextMonth = getNewMonthYear(monthYear, 1);
+    queryClient
+      .prefetchQuery(
+        [queryKeys.appointments, nextMonth.year, nextMonth.month],
+        () => getAppointments(nextMonth.year, nextMonth.month),
+        commonOptions,
+      )
+      .then(undefined);
   }, [queryClient, monthYear]);
 
   // Notes:
@@ -99,7 +107,12 @@ export function useAppointments(): UseAppointments {
     [queryKeys.appointments, monthYear.year, monthYear.month],
     () => getAppointments(monthYear.year, monthYear.month),
     {
+      ...commonOptions,
       select: showAll ? undefined : selectFn,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
+      refetchInterval: 60000,
     },
   );
 
