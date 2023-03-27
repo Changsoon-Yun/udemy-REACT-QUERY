@@ -25,7 +25,13 @@ export function AllStaff(): ReactElement {
           <Heading size="md">Filter by treatment:</Heading>
           <Radio value="all">All</Radio>
           {treatments.map((t) => (
-            <Radio key={t.id} value={t.name}>
+            <Radio
+              onClick={() => {
+                setFilter(t.name);
+              }}
+              key={t.id}
+              value={t.name}
+            >
               {t.name}
             </Radio>
           ))}
