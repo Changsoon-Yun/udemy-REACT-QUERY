@@ -8,14 +8,11 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
-import { useQueryClient } from 'react-query';
 
-import { queryKeys } from '../../react-query/constants';
 import { UserAppointments } from '../user/UserAppointments';
 import { DateBox } from './DateBox';
-import { getNewMonthYear } from './hooks/monthYear';
 import { useAppointments } from './hooks/useAppointments';
 
 export function Calendar(): ReactElement {
